@@ -42,7 +42,7 @@ public class MemberService implements UserDetailsService {
         String userPw = requestDto.getUserPw();
 
         String idRegex = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$";
-        String pwRegex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{12,}$";
+        String pwRegex = "^(?:(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)|(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*])|(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*])|(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]))[A-Za-z\\d!@#$%^&*]{12,}$";
 
         //ID 생성규칙 맞지 않을 경우
         if (userId.equals("") || !userId.matches(idRegex)) {

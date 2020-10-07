@@ -5,6 +5,7 @@ import com.example.tester.service.MemberService;
 import com.example.tester.utils.JwtUtil;
 import com.example.tester.web.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -57,9 +58,16 @@ public class MemberApiController {
     }
 
     @GetMapping("/info")
-    public ResponseEntity<MemberLoginResponseDto> getMemberInfo(@AuthenticationPrincipal Member loginMember) {
+    public ResponseEntity<?> getMemberInfo(@AuthenticationPrincipal Member loginMember) {
+
+        if(loginMember == null) {
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(new MsgResponseDto("로그인이 필요합니다."));
+        }
+
         return ResponseEntity.ok(
-                MemberLoginResponseDto.builder()
+                MemberInfoResponseDto.builder()
                         .userId(loginMember.getUserId())
                         .userName(loginMember.getName())
                         .lastLoginTime(loginMember.getLastLoginTime())
