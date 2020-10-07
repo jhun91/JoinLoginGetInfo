@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -59,6 +61,14 @@ public class MemberService implements UserDetailsService {
         requestDto.setAuth("ROLE_USER");
 
         return memberRepository.save(requestDto.toEntity());
+    }
+
+    /**
+     * 접속한 사람의 마지막 로그인 일시 저장
+     */
+    public void updateLastLoginTime(Member loginMember) {
+        Optional<Member> member = memberRepository.findByUserId(loginMember.getUserId());
+        memberRepository.updateLastLoginTime(member.get().getId(), LocalDateTime.now());
     }
 
     @Override

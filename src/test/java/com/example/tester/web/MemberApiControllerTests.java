@@ -73,7 +73,7 @@ class MemberApiControllerTests {
 
     @Test
     public void loginTest() {
-        String userId = "test@user.com";
+        String userId = "test@user.c1om";
         String userPw = "testUser12!@";
 
         String url = "http://localhost:" + port + "/v1/member/login";

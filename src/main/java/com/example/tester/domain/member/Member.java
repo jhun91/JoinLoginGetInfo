@@ -40,11 +40,12 @@ public class Member implements UserDetails {
     private String auth;
 
     @Builder
-    public Member(String userId, String userPw, String name, String auth) {
+    public Member(String userId, String userPw, String name, String auth, LocalDateTime lastLoginTime) {
         this.userId = userId;
         this.userPw = userPw;
         this.name = name;
         this.auth = auth;
+        this.lastLoginTime = lastLoginTime;
     }
 
     // 사용자의 권한을 콜렉션 형태로 반환

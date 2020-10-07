@@ -25,7 +25,7 @@ public class MemberApiController {
     @PostMapping("/join")
     public ResponseEntity<MsgResponseDto> joinMember(@RequestBody MemberSaveRequestDto requestDto) throws Exception {
         //중복된 이메일 계정 있는지 확인
-        if(memberService.existDuplicateEmail(requestDto.getUserId())) {
+        if (memberService.existDuplicateEmail(requestDto.getUserId())) {
             return ResponseEntity
                     .badRequest()
                     .body(new MsgResponseDto("이미 해당 아이디의 계정이 존재합니다!!"));
@@ -37,19 +37,22 @@ public class MemberApiController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<MemberLoginResponseDto> loginMember(@RequestBody MemberLoginRequestDto loginRequest) {
-        Member loginUser = (Member) memberService.loadUserByUsername(loginRequest.getUserId());
+    public ResponseEntity<MemberLoginTokenDto> loginMember(@RequestBody MemberLoginRequestDto loginRequest) {
+        Member loginMember = (Member) memberService.loadUserByUsername(loginRequest.getUserId());
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginUser, loginRequest.getUserPw()));
+                new UsernamePasswordAuthenticationToken(loginMember, loginRequest.getUserPw()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtUtil.createToken(loginUser.getUserId(), loginUser.getName());
+
+        //토큰 생성
+        String token = jwtUtil.createToken(loginMember.getUserId(), loginMember.getName());
+
+        //마지막 로그인 일시 저장
+        memberService.updateLastLoginTime(loginMember);
 
         return ResponseEntity.ok(
-            MemberLoginResponseDto.builder()
-            .userId(loginUser.getUserId())
-            .userName(loginUser.getName())
-            .accessToken(token)
-            .build()
+                MemberLoginTokenDto.builder()
+                        .accessToken(token)
+                        .build()
         );
     }
 
@@ -57,10 +60,10 @@ public class MemberApiController {
     public ResponseEntity<MemberLoginResponseDto> getMemberInfo(@AuthenticationPrincipal Member loginMember) {
         return ResponseEntity.ok(
                 MemberLoginResponseDto.builder()
-                .userId(loginMember.getUserId())
-                .userName(loginMember.getName())
-                .lastLoginTime(null)
-                .build()
+                        .userId(loginMember.getUserId())
+                        .userName(loginMember.getName())
+                        .lastLoginTime(loginMember.getLastLoginTime())
+                        .build()
         );
     }
 }
