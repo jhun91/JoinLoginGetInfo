@@ -14,6 +14,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/v1/member")
@@ -60,17 +63,24 @@ public class MemberApiController {
     @GetMapping("/info")
     public ResponseEntity<?> getMemberInfo(@AuthenticationPrincipal Member loginMember) {
 
-        if(loginMember == null) {
+        if (loginMember == null) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(new MsgResponseDto("로그인이 필요합니다."));
+        }
+
+        LocalDateTime lastLoginTime = loginMember.getLastLoginTime();
+        String formattedTime = "";
+
+        if(lastLoginTime != null) {
+            formattedTime = lastLoginTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSSSSS"));
         }
 
         return ResponseEntity.ok(
                 MemberInfoResponseDto.builder()
                         .userId(loginMember.getUserId())
                         .userName(loginMember.getName())
-                        .lastLoginTime(loginMember.getLastLoginTime())
+                        .lastLoginTime(formattedTime)
                         .build()
         );
     }

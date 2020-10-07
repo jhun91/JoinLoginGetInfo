@@ -4,17 +4,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor
 public class MemberInfoResponseDto {
     private String userId;
     private String userName;
-    private LocalDateTime lastLoginTime;
+    private String lastLoginTime;
 
     @Builder
-    public MemberInfoResponseDto(String userId, String userName, LocalDateTime lastLoginTime) {
+    public MemberInfoResponseDto(String userId, String userName, String lastLoginTime) {
         this.userId = userId;
         this.userName = userName;
         this.lastLoginTime = lastLoginTime;

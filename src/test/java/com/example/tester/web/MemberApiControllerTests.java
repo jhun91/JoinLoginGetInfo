@@ -18,6 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -58,6 +61,14 @@ class MemberApiControllerTests {
     public void tearDown() {
         memberRepository.deleteAll();
     }
+
+    @Test
+    public void time_format_test() {
+        LocalDateTime currentTime = LocalDateTime.now();
+        System.out.println(currentTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSSSSS")));
+
+    }
+
 
     @Test
     public void regex_test() {
@@ -113,7 +124,7 @@ class MemberApiControllerTests {
 
     @Test
     public void loginTest() {
-        String userId = "test@user.com";
+        String userId = "test@user.c1om";
         String userPw = "testUser12!@";
 
         String url = "http://localhost:" + port + "/v1/member/login";
