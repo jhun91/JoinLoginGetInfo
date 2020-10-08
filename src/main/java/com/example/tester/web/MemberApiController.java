@@ -5,6 +5,7 @@ import com.example.tester.service.MemberService;
 import com.example.tester.utils.JwtUtil;
 import com.example.tester.web.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -53,10 +54,15 @@ public class MemberApiController {
         //마지막 로그인 일시 저장
         memberService.updateLastLoginTime(loginMember);
 
-        return ResponseEntity.ok(
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("authorization", "Bearer " + token);
+
+        return new ResponseEntity<>(
                 MemberLoginTokenDto.builder()
                         .accessToken(token)
                         .build()
+                , headers
+                , HttpStatus.OK
         );
     }
 
@@ -69,10 +75,12 @@ public class MemberApiController {
                     .body(new MsgResponseDto("로그인이 필요합니다."));
         }
 
+        //String token = jwtUtil.createToken(loginMember.getUserId(), loginMember.getName());
+
         LocalDateTime lastLoginTime = loginMember.getLastLoginTime();
         String formattedTime = "";
 
-        if(lastLoginTime != null) {
+        if (lastLoginTime != null) {
             formattedTime = lastLoginTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSSSSS"));
         }
 

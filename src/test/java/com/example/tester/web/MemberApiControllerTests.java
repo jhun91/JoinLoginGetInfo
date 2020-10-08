@@ -124,7 +124,7 @@ class MemberApiControllerTests {
 
     @Test
     public void loginTest() {
-        String userId = "test@user.c1om";
+        String userId = "test@user.com";
         String userPw = "testUser12!@";
 
         String url = "http://localhost:" + port + "/v1/member/login";
@@ -144,8 +144,9 @@ class MemberApiControllerTests {
         String url = "http://localhost:" + port + "/v1/member/info";
 
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
-        //assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        //assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
         System.out.println("MemberApiControllerTests memberInfoTest :: " + responseEntity.getBody());
     }
 
