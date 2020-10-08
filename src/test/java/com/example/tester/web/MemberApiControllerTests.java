@@ -13,8 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -39,15 +38,13 @@ class MemberApiControllerTests {
     @Autowired
     private MemberRepository memberRepository;
 
-    private Member initMember;
-
     @BeforeEach
     public void init() throws Exception {
 
         String userId = "test@user.com";
         String userName = "tester";
         String userPw = "testUser12!@";
-        initMember = memberService.joinMember(
+        memberService.joinMember(
                 MemberSaveRequestDto.builder()
                         .userId(userId)
                         .userPw(userPw)
@@ -66,9 +63,7 @@ class MemberApiControllerTests {
     public void time_format_test() {
         LocalDateTime currentTime = LocalDateTime.now();
         System.out.println(currentTime.format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSSSSS")));
-
     }
-
 
     @Test
     public void regex_test() {
@@ -118,7 +113,6 @@ class MemberApiControllerTests {
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(url, requestDto, String.class);
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        //assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         System.out.println("MemberApiControllerTests joinTest :: " + responseEntity.getBody());
     }
 
@@ -143,10 +137,24 @@ class MemberApiControllerTests {
     public void memberInfoTest() {
         String url = "http://localhost:" + port + "/v1/member/info";
 
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
+        //위에 선언한 init의 테스트 계정 및 로그인 이후
+        String token = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOiJ0ZXN0QHVzZXIuY29tIiwidXNlck5hbWUiOiJ0ZXN0ZXIifQ.MpW7dCZVLPEHmsBvoZLe5lMee3zeSP6Zdpw9dVxX-aM";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("authorization", "Bearer " + token);
+
+        HttpEntity request = new HttpEntity(headers);
+
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                request,
+                String.class,
+                1
+        );
 
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        //assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
         System.out.println("MemberApiControllerTests memberInfoTest :: " + responseEntity.getBody());
     }
 
