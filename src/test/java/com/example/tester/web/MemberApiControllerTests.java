@@ -1,6 +1,5 @@
 package com.example.tester.web;
 
-import com.example.tester.domain.member.Member;
 import com.example.tester.domain.member.MemberRepository;
 import com.example.tester.service.MemberService;
 import com.example.tester.web.dto.MemberLoginRequestDto;
@@ -95,7 +94,7 @@ class MemberApiControllerTests {
     }
 
     @Test
-    public void joinTest() throws Exception {
+    public void joinTest() {
 
         String userId = "test1@user.com";  //"test@user.com";
         String userName = "tester1";
